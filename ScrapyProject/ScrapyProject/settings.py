@@ -1,4 +1,4 @@
-# Scrapy settings for zara_hm_scraper project
+# Scrapy settings for ScrapyProject project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,10 +7,10 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = "zara_hm_scraper"
+BOT_NAME = "ScrapyProject"
 
-SPIDER_MODULES = ["zara_hm_scraper.spiders"]
-NEWSPIDER_MODULE = "zara_hm_scraper.spiders"
+SPIDER_MODULES = ["ScrapyProject.spiders"]
+NEWSPIDER_MODULE = "ScrapyProject.spiders"
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -45,13 +45,13 @@ DOWNLOAD_DELAY = 10
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    "zara_hm_scraper.middlewares.ZaraHmScraperSpiderMiddleware": 543,
+#    "ScrapyProject.middlewares.ZaraHmScraperSpiderMiddleware": 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    "zara_hm_scraper.middlewares.ZaraHmScraperDownloaderMiddleware": 543,
+#    "ScrapyProject.middlewares.ZaraHmScraperDownloaderMiddleware": 543,
 #}
 
 # Enable or disable extensions
@@ -62,9 +62,14 @@ DOWNLOAD_DELAY = 10
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    "zara_hm_scraper.pipelines.ZaraHmScraperPipeline": 300,
-#}
+
+ITEM_PIPELINES = {
+   'ScrapyProject.pipelines.MongoDBPipeline': 300,
+}
+
+# MongoDB connection settings
+MONGODB_URI = 'mongodb://localhost:27017'
+MONGODB_DB = 'scrapy_data'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
@@ -91,3 +96,5 @@ DOWNLOAD_DELAY = 10
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
+
+

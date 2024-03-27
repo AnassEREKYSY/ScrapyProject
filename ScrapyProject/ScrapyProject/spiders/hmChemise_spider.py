@@ -1,8 +1,10 @@
 import scrapy
-import json
 
-class HMProductSpider(scrapy.Spider):
+class HMChemiseSpider(scrapy.Spider):
     name = 'hmspiderChemise'
+    custom_settings = {
+        'ITEM_PIPELINES': {'ScrapyProject.pipelines.MongoDBPipeline': 300,},
+    }
     allowed_domains = ['www2.hm.com']
     start_urls = [
         'https://www2.hm.com/fr_fr/homme.html', # Men's section
@@ -33,16 +35,23 @@ class HMProductSpider(scrapy.Spider):
             category = data_article.xpath('.//a/h2/text()').get()
             price = data_article.xpath('.//p/span/text()').get()
 
-            images_article=article.xpath('//ul[@class="split_list"]/li').getall()
-            for li in images_article:
-                img_src = li.xpath('.//a/div/div/div/span/img/@src').get()
-                if img_src:
-                    images.append(img_src)
+            image=any
 
+            image_article = article.xpath('.//div[@class="e357ce f8323f a098bf"]/span/img[@imagetype="PRODUCT_IMAGE"]/@src').get()
+            
+            # Check if the image URL is base64 encoded
+            if image_article.startswith('data:image'):
+                # Handle base64-encoded image
+                image_article = article.xpath('.//div[@class="e357ce f8323f a098bf"]/span/img[@imagetype="PRODUCT_IMAGE"]/@src').get()
 
+            image=image_article
+            
             yield {
                 'category': category,
                 'price': price,
-                'image': images,
+                'image': image,
             }
+        next_page = response.xpath('//a[@class="acae11 e0a93a b92105 a213fe e35f0b"]/@href').get()
+        if next_page:
+            yield response.follow(next_page, callback=self.parse_chemise)
        
