@@ -1,8 +1,8 @@
-import scrapy
 from jinja2 import Template
+import scrapy
 
-class HMChemiseSpider(scrapy.Spider):
-    name = 'hmspiderChemise'
+class HMAccessoireSpider(scrapy.Spider):
+    name = 'hmspiderAccessoire'
     custom_settings = {
         'ITEM_PIPELINES': {'ScrapyProject.pipelines.MongoDBPipeline': 300,},
     }
@@ -16,29 +16,23 @@ class HMChemiseSpider(scrapy.Spider):
     women_prices = []
 
     def parse(self, response):
-        # Extracting category links
-        men_link=response.xpath('//a[contains(text(), "Homme")]/@href').get()
-        women_link=response.xpath('//a[contains(text(), "Femme")]/@href').get()
-
-        chemises=[
-            response.css('a[href*="/fr_fr/homme/catalogue-par-produit/chemises.html"]::attr(href)').get(),
-            response.css('a[href*="/fr_fr/femme/catalogue-par-produit/chemisiers-et-blouses.html"]::attr(href)').get(),
+        accessoires=[
+            response.css('a[href*="/fr_fr/homme/catalogue-par-produit/chaussures.html"]::attr(href)').get(),
+            response.css('a[href*="/fr_fr/femme/catalogue-par-produit/chaussures.html"]::attr(href)').get(),
         ]
-        for chemise in chemises:
-            if '/homme/' in chemise:
-                yield response.follow(chemise, callback=self.parse_chemise, meta={'gender': 'men'})
-            elif '/femme/' in chemise:
-                yield response.follow(chemise, callback=self.parse_chemise, meta={'gender': 'women'})
+        for accessoire in accessoires:
+            if '/homme/' in accessoire:
+                yield response.follow(accessoire, callback=self.parse_accessoire, meta={'gender': 'men'})
+            elif '/femme/' in accessoire:
+                yield response.follow(accessoire, callback=self.parse_accessoire, meta={'gender': 'women'})
 
 
-
-    
-    def parse_chemise(self, response):
+    def parse_accessoire(self, response):
         gender = response.meta.get('gender')
 
-        chemise_article = response.xpath('//*[@id="products-listing-section"]/ul/li/section/article')
+        accessoire_article = response.xpath('//*[@id="products-listing-section"]/ul/li/section/article')
         prices = [] 
-        for article in chemise_article:
+        for article in accessoire_article:
             data_article = article.xpath('.//div[@class="eed2a5 ec329a d5728c"]//div[@class="b86b62 ec329a"]')
             category = data_article.xpath('.//a/h2/text()').get()
             price = data_article.xpath('.//p/span/text()').get()
@@ -61,9 +55,7 @@ class HMChemiseSpider(scrapy.Spider):
         
         next_page = response.xpath('//a[@class="acae11 e0a93a b92105 a213fe e35f0b"]/@href').get()
         if next_page:
-            yield response.follow(next_page, callback=self.parse_chemise, meta={'gender': gender})
-
-            
+            yield response.follow(next_page, callback=self.parse_accessoire, meta={'gender': gender})
 
     def closed(self, reason):
         men_average_price = sum(map(sum, self.men_prices)) / sum(len(x) for x in self.men_prices) if self.men_prices else 0
@@ -74,8 +66,6 @@ class HMChemiseSpider(scrapy.Spider):
 
         men_lowest_price = min(map(min, self.men_prices)) if self.men_prices else 0
         women_lowest_price = min(map(min, self.women_prices)) if self.women_prices else 0
-
-
 
         men_average_price_formatted = "{:.2f}".format(men_average_price)
         women_average_price_formatted = "{:.2f}".format(women_average_price)
@@ -90,7 +80,7 @@ class HMChemiseSpider(scrapy.Spider):
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Chemise Prices</title>
+            <title>Accessoire Prices</title>
             <!-- Bootstrap CSS -->
             <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
             <!-- Font Awesome -->
@@ -129,7 +119,7 @@ class HMChemiseSpider(scrapy.Spider):
 
             <!-- Content -->
             <div class="container mt-5">
-                <h3 class="text-center mt-4 mb-4">Chemise Statistics</h3>
+                <h3 class="text-center mt-4 mb-4">Accessoire Statistics</h3>
                 <div class="row justify-content-center">
                     <div class="col-md-6">
                         <div class="card">
@@ -181,5 +171,5 @@ class HMChemiseSpider(scrapy.Spider):
         )
 
         # Write rendered HTML to a file
-        with open('template/chemise_prices.html', 'w', encoding='utf-8') as f:
+        with open('template/accessoire_prices.html', 'w', encoding='utf-8') as f:
             f.write(rendered_html)

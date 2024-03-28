@@ -1,0 +1,23 @@
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim
+
+# Set environment variables for MySQL connection
+ENV MYSQL_HOST=mysql
+ENV MYSQL_USER=root
+ENV MYSQL_PASSWORD=container_password
+ENV MYSQL_DATABASE=scrapy_data
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the current directory contents into the container at /app
+COPY . /app
+
+# Install dependencies
+RUN pip install --no-cache-dir scrapy mysql-connector-python
+
+# Expose the port the Scrapy runs on
+EXPOSE 8080
+
+# Run the scrapy project when the container launches
+CMD ["scrapy", "crawl", "hmspiderJeans"]
