@@ -1,28 +1,39 @@
 # ScrapyProject
 
-# c'est un projet de grattage des données pour la marque H&M
+# Project Name
+
+    This is a web scraping project for the H&M brand. We have selected 7 products to test: jeans, shirts, shoes, accessories, lingerie, T-shirts, and sportswear. Currently, we are scraping the price, name, and gender for each product, but we plan to add more functionalities in future versions, requiring additional information.
+
+    We aim to compare the prices of each product between men's and women's sections, providing statistics such as average, maximum, and minimum prices in a well-designed web page.
 
 
-# On a choisit que 7 produits pour tester (jeans,chemise,chaussures,accessoires,lingerie,T-Shirt et sport)
+## Prerequisites
+
+- Python
+- Scrapy
+- Docker
 
 
-# On prend le prix , le nom , et le genre pour les produits on peut prendre d'autre mais moi pour le moment on a pris que ça mais avec les nouvelles version du projet on va ajouter d'autres fonctionalité donc on aura besoin d'autres informations
+## Getting Started
 
-# On fait une comparaison pour chaque produit entre les femmes et les hommes en donnant la moyenne du prix , le max et le min du prix de produit dans une page web bien designé qui affiche ces statistique
+1. Clone the repository: https://github.com/AnassEREKYSY/ScrapyProject
+2. execute the commande : scrapy startprojet nomProjet to create a scrapy project
+3. create a spider in /spiders folder to scrap data
+4. to execute spider tap this commande : scrapy crawl nomSppider // scrapy crawl nomSpider -O nomSpider.Json
+
+## TODO List
+
+1. Create Spiders
+2. Scrap data 
+3. Store the scraped Data in json files
+4. Calculate Average, Max and Min prices for each product 
+5. Create Template that show Statistics 
+6. Create dockerFile, dockerCompose
+- Store scraped data in a containerized MySQL or PostgreSQL database.
 
 
-# quick start : 
-# on crée un projet scrapy par la commande : scrapy startprojet nomProjet
-# on crée nos spiders qui vont gratter les données depuis le site 
-# on lance chaque spider par la commade : scrapy crawl nomSppider // scrapy crawl nomSpider -O nomSpider.Json
-
-
-
-
-
-# Pour l'instant le but de ce projet et de le vendre au concurant de H&M pour qu'il aientune idée apropos des prix des produits chez H&M et tout autres infos
-
-
-# Pour l'avenir l'objectif est de rendre ce projet plus générale c'est à dire que n'importe quel magasin peut l'utiliser pour avoir des statistique sur les pris des autres et n'on plus se contenté pour H&M.
-# Un autre objectif est de rendre les données stocké dans une base de donnée dockerisée et non pas dans les fichier json
-
+## Objectif
+1. The current objective of this project is to provide insights into H&M product prices for competitors.
+    In the future, we aim to make this project more generalizable so that any store can utilize it to obtain statistics on competitor prices.
+2. Another objective is to store the data in a containerized database instead of JSON files.
+    Feel free to modify and expand upon this README as needed to accurately reflect your project and its goals.
