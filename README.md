@@ -21,16 +21,17 @@
 
 ## TODO List
 
-1. Create Spiders
-2. Scrap data 
-3. Store the scraped Data in json files
-4. Calculate Average, Max and Min prices for each product 
-5. Create Template that show Statistics 
-    ![Scrapy Spider](./ScrapyProject/ScrapyProject/statistique.png)
-6. Create dockerFile, dockerCompose
+- [x] Create Spiders
+- [x] Scrap data 
+- [x] Store the scraped Data in json files
+- [x] Calculate Average, Max and Min prices for each product 
+- [x] Create Template that show Statistics 
+    ![alt text](./ScrapyProject/ScrapyProject/statistique.png)
+- [x] Create dockerFile, dockerCompose
 
 ## Features
-1. Store scraped data in a containerized MySQL or PostgreSQL database.
+
+- [x] Store scraped data in a containerized MySQL or PostgreSQL database.
 
 
 ## Objectif
