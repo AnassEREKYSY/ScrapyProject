@@ -15,9 +15,6 @@ class HMJeansSpider(scrapy.Spider):
     women_prices = []
 
     def parse(self, response):
-        # Extracting category links
-        men_link=response.xpath('//a[contains(text(), "Homme")]/@href').get()
-        women_link=response.xpath('//a[contains(text(), "Femme")]/@href').get()
         jeans=[
             response.css('a[href*="/fr_fr/homme/catalogue-par-produit/jeans.html"]::attr(href)').get(),
             response.css('a[href*="/fr_fr/femme/catalogue-par-produit/jeans.html"]::attr(href)').get(),
@@ -35,39 +32,38 @@ class HMJeansSpider(scrapy.Spider):
         jeans_article = response.xpath('//*[@id="products-listing-section"]/ul/li/section/article')
         prices = [] 
         # Connect to the MySQL database
-        try:
-            cnx = mysql.connector.connect(
-                user=self.settings.get('MYSQL_USER'),
-                password=self.settings.get('MYSQL_PASSWORD'),
-                host=self.settings.get('MYSQL_HOST'),
-                database=self.settings.get('MYSQL_DATABASE')
-            )
-        except mysql.connector.Error as err:
-            if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-                self.logger.error("Something is wrong with your MySQL user name or password")
-            elif err.errno == errorcode.ER_BAD_DB_ERROR:
-                self.logger.error("Database does not exist")
-            else:
-                self.logger.error(err)
+        # try:
+        #     cnx = mysql.connector.connect(
+        #         user=self.settings.get('MYSQL_USER'),
+        #         password=self.settings.get('MYSQL_PASSWORD'),
+        #         host=self.settings.get('MYSQL_HOST'),
+        #         database=self.settings.get('MYSQL_DATABASE')
+        #     )
+        # except mysql.connector.Error as err:
+        #     if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+        #         self.logger.error("Something is wrong with your MySQL user name or password")
+        #     elif err.errno == errorcode.ER_BAD_DB_ERROR:
+        #         self.logger.error("Database does not exist")
+        #     else:
+        #         self.logger.error(err)
 
-        cursor = cnx.cursor()
+        # cursor = cnx.cursor()
 
-        # Insert scraped data into the MySQL table
-        add_data = ("INSERT INTO jeans_data "
-                    "(gender, category, price) "
-                    "VALUES (%s, %s, %s)")
+        # # Insert scraped data into the MySQL table
+        # add_data = ("INSERT INTO jeans_data "
+        #             "(gender, category, price) "
+        #             "VALUES (%s, %s, %s)")
         for article in jeans_article:
             data_article = article.xpath('.//div[@class="eed2a5 ec329a d5728c"]//div[@class="b86b62 ec329a"]')
             category = data_article.xpath('.//a/h2/text()').get()
             price = data_article.xpath('.//p/span/text()').get()
-            # image=article.xpath('.//div[@class="e357ce f8323f a098bf"]/span/img[@imagetype="PRODUCT_IMAGE"]/@src').get()
             
             # Convert price to float for comparison
             price_float = float(price.replace('€', '').replace(',', '.'))
             prices.append(price_float)
 
-            data = (gender, category, price_float)
-            cursor.execute(add_data, data)
+            # data = (gender, category, price_float)
+            # cursor.execute(add_data, data)
             
             yield {
                 'gender': gender,
@@ -83,11 +79,11 @@ class HMJeansSpider(scrapy.Spider):
         if next_page:
             yield response.follow(next_page, callback=self.parse_jeans, meta={'gender': gender})
         # Commit the transaction
-        cnx.commit()
+        # cnx.commit()
 
-        # Close connections
-        cursor.close()
-        cnx.close()
+        # # Close connections
+        # cursor.close()
+        # cnx.close()
 
     def closed(self, reason):
         men_average_price = sum(map(sum, self.men_prices)) / sum(len(x) for x in self.men_prices) if self.men_prices else 0

@@ -63,10 +63,6 @@ DOWNLOAD_DELAY = 3
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 
-ITEM_PIPELINES = {
-    'ScrapyProject.pipelines.MySQLPipeline': 300,
-}
-
 MYSQL_HOST = 'mysql'
 MYSQL_USER = 'root'
 MYSQL_PASSWORD = 'mysql_password'

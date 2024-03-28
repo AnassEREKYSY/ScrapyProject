@@ -1,10 +1,10 @@
 from jinja2 import Template
 import scrapy
+
+import mysql.connector
+from mysql.connector import errorcode
 class HMTShirtSpider(scrapy.Spider):
     name = 'hmspiderTShirt'
-    custom_settings = {
-        'ITEM_PIPELINES': {'ScrapyProject.pipelines.MongoDBPipeline': 300,},
-    }
     allowed_domains = ['www2.hm.com']
     start_urls = [
         'https://www2.hm.com/fr_fr/homme.html', # Men's section
@@ -32,21 +32,43 @@ class HMTShirtSpider(scrapy.Spider):
         # Here you can scrape the product details from the T-shirt section
         tshirt_article = response.xpath('//*[@id="products-listing-section"]/ul/li/section/article')
         prices = [] 
+        # Connect to the MySQL database
+        # try:
+        #     cnx = mysql.connector.connect(
+        #         user=self.settings.get('MYSQL_USER'),
+        #         password=self.settings.get('MYSQL_PASSWORD'),
+        #         host=self.settings.get('MYSQL_HOST'),
+        #         database=self.settings.get('MYSQL_DATABASE')
+        #     )
+        # except mysql.connector.Error as err:
+        #     if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+        #         self.logger.error("Something is wrong with your MySQL user name or password")
+        #     elif err.errno == errorcode.ER_BAD_DB_ERROR:
+        #         self.logger.error("Database does not exist")
+        #     else:
+        #         self.logger.error(err)
+
+        # cursor = cnx.cursor()
+
+        # # Insert scraped data into the MySQL table
+        # add_data = ("INSERT INTO jeans_data "
+        #             "(gender, category, price) "
+        #             "VALUES (%s, %s, %s)")
         for article in tshirt_article:
             data_article = article.xpath('.//div[@class="eed2a5 ec329a d5728c"]//div[@class="b86b62 ec329a"]')
             category = data_article.xpath('.//a/h2/text()').get()
             price = data_article.xpath('.//p/span/text()').get()
-            image = article.xpath('.//div[@class="e357ce f8323f a098bf"]/span/img[@imagetype="PRODUCT_IMAGE"]/@src').get()
-
+            
              # Convert price to float for comparison
             price_float = float(price.replace('€', '').replace(',', '.'))
             prices.append(price_float)
+            # data = (gender, category, price_float)
+            # cursor.execute(add_data, data)
             
             yield {
                 'gender': gender,
                 'category': category,
                 'price': price,
-                'image': image,
             }
         if gender == 'men':
             self.men_prices.append(prices)
@@ -56,6 +78,12 @@ class HMTShirtSpider(scrapy.Spider):
         next_page = response.xpath('//a[@class="acae11 e0a93a b92105 a213fe e35f0b"]/@href').get()
         if next_page:
             yield response.follow(next_page, callback=self.parse_tShirt, meta={'gender': gender})
+        # Commit the transaction
+        # cnx.commit()
+
+        # # Close connections
+        # cursor.close()
+        # cnx.close()
     
     def closed(self, reason):
         men_average_price = sum(map(sum, self.men_prices)) / sum(len(x) for x in self.men_prices) if self.men_prices else 0
@@ -172,5 +200,5 @@ class HMTShirtSpider(scrapy.Spider):
         )
 
         # Write rendered HTML to a file
-        with open('template/tshirt_prices.html', 'w') as f:
-            f.write(rendered_html) 
+        with open('template/tshirt_prices.html', 'w', encoding='utf-8') as f:
+            f.write(rendered_html)
