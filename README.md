@@ -1,10 +1,8 @@
 # ScrapyProject
 
-# Project Name
+- This is a web scraping project for the H&M brand. We have selected 7 products to test: jeans, shirts, shoes, accessories, lingerie, T-shirts, and sportswear. Currently, we are scraping the price, name, and gender for each product, but we plan to add more functionalities in future versions, requiring additional information.
 
-    This is a web scraping project for the H&M brand. We have selected 7 products to test: jeans, shirts, shoes, accessories, lingerie, T-shirts, and sportswear. Currently, we are scraping the price, name, and gender for each product, but we plan to add more functionalities in future versions, requiring additional information.
-
-    We aim to compare the prices of each product between men's and women's sections, providing statistics such as average, maximum, and minimum prices in a well-designed web page.
+- We aim to compare the prices of each product between men's and women's sections, providing statistics such as average, maximum, and minimum prices in a well-designed web page.
 
 
 ## Prerequisites
@@ -16,7 +14,7 @@
 
 ## Getting Started
 
-1. Clone the repository: https://github.com/AnassEREKYSY/ScrapyProject
+1. Clone the repository: [ScrapyProject](https://github.com/AnassEREKYSY/ScrapyProject)
 2. execute the commande : scrapy startprojet nomProjet to create a scrapy project
 3. create a spider in /spiders folder to scrap data
 4. to execute spider tap this commande : scrapy crawl nomSppider // scrapy crawl nomSpider -O nomSpider.Json
@@ -28,8 +26,11 @@
 3. Store the scraped Data in json files
 4. Calculate Average, Max and Min prices for each product 
 5. Create Template that show Statistics 
+    ![Scrapy Spider](./ScrapyProject/ScrapyProject/statistique.png)
 6. Create dockerFile, dockerCompose
-- Store scraped data in a containerized MySQL or PostgreSQL database.
+
+## Features
+1. Store scraped data in a containerized MySQL or PostgreSQL database.
 
 
 ## Objectif
